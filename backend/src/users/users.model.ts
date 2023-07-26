@@ -1,4 +1,5 @@
-import { Table, Model, Column, DataType } from 'sequelize-typescript'
+import { Table, Model, Column, DataType, HasOne } from 'sequelize-typescript'
+import { Cart } from 'src/cart/cart.model'
 
 interface UserCreationInterface {
     email: string
@@ -15,4 +16,7 @@ export class User extends Model<User, UserCreationInterface> {
 
     @Column({ type: DataType.STRING, defaultValue: 'USER' })
     role: string
+
+    @HasOne(() => Cart)
+    cart: Cart
 }

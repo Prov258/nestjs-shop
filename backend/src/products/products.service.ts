@@ -1,17 +1,41 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { ProductDto } from './dto/product.dto'
 import { Product } from './products.model'
 import { InjectModel } from '@nestjs/sequelize'
+import { UpdateProductDto } from './dto/updateProduct.dto'
 
 @Injectable()
 export class ProductsService {
     constructor(@InjectModel(Product) private productModel: typeof Product) {}
 
     async getProducts() {
-        return this.productModel.findAll()
+        return await this.productModel.findAll({ include: [{ all: true }] })
+    }
+
+    async getProductById(id: number) {
+        return await this.productModel.findOne({
+            where: { id },
+            include: [{ all: true }],
+        })
     }
 
     async createProduct(productDto: ProductDto) {
-        return this.productModel.create(productDto)
+        return await this.productModel.create(productDto)
+    }
+
+    async updateProductById(id: number, updateProductDto: UpdateProductDto) {
+        const product = await this.getProductById(id)
+
+        if (!product) {
+            throw new BadRequestException()
+        }
+
+        return await this.productModel.update(updateProductDto, {
+            where: { id },
+        })
+    }
+
+    async deleteProductById(id: number) {
+        return await this.productModel.destroy({ where: { id } })
     }
 }

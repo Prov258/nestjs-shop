@@ -6,14 +6,14 @@ import { UsersModule } from './users/users.module'
 import { ConfigModule } from '@nestjs/config'
 import { User } from './users/users.model'
 import { AuthModule } from './auth/auth.module'
-import { ProductsController } from './products/products.controller'
-import { ProductsService } from './products/products.service'
 import { ProductsModule } from './products/products.module'
 import { Product } from './products/products.model'
 import { BrandsModule } from './brands/brands.module'
 import { TypesModule } from './types/types.module'
 import { Brand } from './brands/brands.model'
 import { Type } from './types/types.model'
+import { CartModule } from './cart/cart.module'
+import { Cart, CartProduct } from './cart/cart.model'
 
 @Module({
     imports: [
@@ -27,13 +27,14 @@ import { Type } from './types/types.model'
             database: process.env.POSTGRES_DATABASE,
             autoLoadModels: true,
             synchronize: true,
-            models: [User, Product, Brand, Type],
+            models: [User, Product, Brand, Type, Cart, CartProduct],
         }),
         UsersModule,
         AuthModule,
         ProductsModule,
         BrandsModule,
         TypesModule,
+        CartModule,
     ],
     controllers: [AppController],
     providers: [AppService],
