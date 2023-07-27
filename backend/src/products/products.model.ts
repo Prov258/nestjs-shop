@@ -5,8 +5,10 @@ import {
     DataType,
     ForeignKey,
     BelongsTo,
+    HasMany,
 } from 'sequelize-typescript'
 import { Brand } from 'src/brands/brands.model'
+import { Rating } from 'src/rating/rating.model'
 import { Type } from 'src/types/types.model'
 
 interface ProductCreationInterface {
@@ -26,7 +28,7 @@ export class Product extends Model<Product, ProductCreationInterface> {
     price: number
 
     @Column({
-        type: DataType.DECIMAL(10, 1),
+        type: DataType.DECIMAL(2, 1),
         defaultValue: 0,
         allowNull: false,
     })
@@ -48,4 +50,7 @@ export class Product extends Model<Product, ProductCreationInterface> {
 
     @BelongsTo(() => Type)
     type: Type
+
+    @HasMany(() => Rating)
+    ratings: Rating[]
 }

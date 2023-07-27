@@ -1,6 +1,8 @@
+import { IsNotEmpty, IsNumber } from 'class-validator'
 import {
     BelongsTo,
     Column,
+    DataType,
     ForeignKey,
     HasMany,
     HasOne,
@@ -35,4 +37,9 @@ export class CartProduct extends Model {
 
     @BelongsTo(() => Product)
     product: Product
+
+    @IsNotEmpty()
+    @IsNumber()
+    @Column({ type: DataType.INTEGER, defaultValue: 1 })
+    quantity: number
 }

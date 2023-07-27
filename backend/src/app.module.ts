@@ -14,6 +14,8 @@ import { Brand } from './brands/brands.model'
 import { Type } from './types/types.model'
 import { CartModule } from './cart/cart.module'
 import { Cart, CartProduct } from './cart/cart.model'
+import { RatingModule } from './rating/rating.module'
+import { Rating } from './rating/rating.model'
 
 @Module({
     imports: [
@@ -27,7 +29,7 @@ import { Cart, CartProduct } from './cart/cart.model'
             database: process.env.POSTGRES_DATABASE,
             autoLoadModels: true,
             synchronize: true,
-            models: [User, Product, Brand, Type, Cart, CartProduct],
+            models: [User, Product, Brand, Type, Cart, CartProduct, Rating],
         }),
         UsersModule,
         AuthModule,
@@ -35,6 +37,7 @@ import { Cart, CartProduct } from './cart/cart.model'
         BrandsModule,
         TypesModule,
         CartModule,
+        RatingModule,
     ],
     controllers: [AppController],
     providers: [AppService],

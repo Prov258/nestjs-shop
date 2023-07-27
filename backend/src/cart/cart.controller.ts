@@ -5,12 +5,14 @@ import {
     Get,
     Param,
     Post,
+    Put,
     Req,
     UseGuards,
 } from '@nestjs/common'
 import { CartService } from './cart.service'
 import { AuthGuard } from 'src/auth/auth.guard'
 import { AuthenticatedRequest } from 'src/auth/interface/authenticated-request.interface'
+import { UpdateCartDto } from './dto/updateCart.dto'
 
 @UseGuards(AuthGuard)
 @Controller('cart')
@@ -28,6 +30,17 @@ export class CartController {
         @Body('productId') productId: number,
     ) {
         return this.cartService.addProductToCart(req.user.sub, productId)
+    }
+
+    @Put()
+    updateProductCartQuantity(
+        @Req() req: AuthenticatedRequest,
+        @Body() updateCartDto: UpdateCartDto,
+    ) {
+        return this.cartService.updateCartProductQuantity(
+            req.user.sub,
+            updateCartDto,
+        )
     }
 
     @Delete(':id')
