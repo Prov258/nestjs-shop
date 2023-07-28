@@ -1,4 +1,4 @@
-import { IsDecimal, IsOptional, IsString } from 'class-validator'
+import { IsDecimal, IsNumber, IsOptional, IsString } from 'class-validator'
 
 export class UpdateProductDto {
     @IsOptional()
@@ -8,6 +8,10 @@ export class UpdateProductDto {
     @IsOptional()
     @IsDecimal()
     price?: number
+
+    @IsOptional()
+    @IsNumber()
+    rating?: number
 
     @IsOptional()
     @IsString()

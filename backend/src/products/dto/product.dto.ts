@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer'
 import { IsDecimal, IsNotEmpty, IsNumber, IsString } from 'class-validator'
 
 export class ProductDto {
@@ -10,14 +11,12 @@ export class ProductDto {
     price: number
 
     @IsNotEmpty()
-    @IsString()
-    img: string
-
-    @IsNotEmpty()
     @IsNumber()
+    @Transform(({ value }) => Number(value))
     brandId: number
 
     @IsNotEmpty()
     @IsNumber()
+    @Transform(({ value }) => Number(value))
     typeId: number
 }

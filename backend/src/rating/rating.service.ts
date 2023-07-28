@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/sequelize'
 import { Rating } from './rating.model'
 import { ProductsService } from 'src/products/products.service'
 import { Sequelize } from 'sequelize'
+import { UpdateRatingDto } from './dto/updateRating.dto'
 
 @Injectable()
 export class RatingService {
@@ -17,18 +18,61 @@ export class RatingService {
     }
 
     async addRating(productId: number, userId: number, ratingDto: RatingDto) {
-        const product = await this.productsService.getProductById(productId)
+        let createdRating = await this.ratingModel.findOne({
+            where: { productId, userId },
+        })
 
-        if (!product || ratingDto.rate > 5 || ratingDto.rate < 0) {
+        if (createdRating) {
             throw new BadRequestException()
         }
 
-        const createdRating = await this.ratingModel.create({
+        createdRating = await this.ratingModel.create({
             userId,
             productId,
-            ratingDto,
+            ...ratingDto,
         })
 
+        await this.updateProductAverage(productId)
+
+        return createdRating
+    }
+
+    async updateRating(
+        ratingId: number,
+        userId: number,
+        updateRatingDto: UpdateRatingDto,
+    ) {
+        const rating = await this.ratingModel.findOne({
+            where: { id: ratingId, userId },
+        })
+
+        if (!rating) {
+            throw new BadRequestException()
+        }
+
+        const updatedRating = await rating.update(updateRatingDto)
+
+        await this.updateProductAverage(rating.productId)
+
+        return updatedRating
+    }
+
+    async deleteRatingById(ratingId: number, userId: number) {
+        const rating = await this.ratingModel.findOne({
+            where: { id: ratingId, userId },
+        })
+
+        if (!rating) {
+            throw new BadRequestException()
+        }
+
+        const productId = rating.productId
+
+        await rating.destroy()
+        await this.updateProductAverage(productId)
+    }
+
+    private async updateProductAverage(productId: number) {
         const average = (
             await this.ratingModel.findOne({
                 attributes: [
@@ -38,8 +82,8 @@ export class RatingService {
             })
         ).getDataValue('average')
 
-        await product.update({ rating: average })
-
-        return createdRating
+        await this.productsService.updateProductById(productId, {
+            rating: average,
+        })
     }
 }

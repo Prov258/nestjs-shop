@@ -23,8 +23,11 @@ export class ProductsService {
         })
     }
 
-    async createProduct(productDto: ProductDto) {
-        return await this.productModel.create(productDto)
+    async createProduct(productDto: ProductDto, image: Express.Multer.File) {
+        return await this.productModel.create({
+            ...productDto,
+            img: image.filename,
+        })
     }
 
     async updateProductById(id: number, updateProductDto: UpdateProductDto) {

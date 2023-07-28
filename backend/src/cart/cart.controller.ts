@@ -4,6 +4,7 @@ import {
     Delete,
     Get,
     Param,
+    ParseIntPipe,
     Post,
     Put,
     Req,
@@ -46,8 +47,8 @@ export class CartController {
     @Delete(':id')
     deleteProductFromCart(
         @Req() req: AuthenticatedRequest,
-        @Param('id') id: string,
+        @Param('id', ParseIntPipe) id: number,
     ) {
-        return this.cartService.deleteProductFromCart(req.user.sub, Number(id))
+        return this.cartService.deleteProductFromCart(req.user.sub, id)
     }
 }
