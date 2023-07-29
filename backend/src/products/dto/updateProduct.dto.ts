@@ -12,8 +12,4 @@ export class UpdateProductDto {
     @IsOptional()
     @IsNumber()
     rating?: number
-
-    @IsOptional()
-    @IsString()
-    img?: string
 }

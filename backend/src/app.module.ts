@@ -16,6 +16,8 @@ import { CartModule } from './cart/cart.module'
 import { Cart, CartProduct } from './cart/cart.model'
 import { RatingModule } from './rating/rating.module'
 import { Rating } from './rating/rating.model'
+import { ServeStaticModule } from '@nestjs/serve-static'
+import { join } from 'path'
 
 @Module({
     imports: [
@@ -30,6 +32,9 @@ import { Rating } from './rating/rating.model'
             autoLoadModels: true,
             synchronize: true,
             models: [User, Product, Brand, Type, Cart, CartProduct, Rating],
+        }),
+        ServeStaticModule.forRoot({
+            rootPath: join(__dirname, '..', 'public'),
         }),
         UsersModule,
         AuthModule,

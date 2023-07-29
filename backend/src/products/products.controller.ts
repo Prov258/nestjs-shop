@@ -9,6 +9,7 @@ import {
     ParseIntPipe,
     Post,
     Put,
+    Query,
     UploadedFile,
     UseGuards,
     UseInterceptors,
@@ -22,14 +23,19 @@ import { RolesGuard } from 'src/auth/roles.guard'
 import { UpdateProductDto } from './dto/updateProduct.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { multerOptions } from 'src/config/multer.config'
+import { SortingOptions, SortingQueryPipe } from './pipes/sortingQuery.pipe'
+import { FilterQueryDto } from './dto/filterQuery.dto'
 
 @Controller('products')
 export class ProductsController {
     constructor(private productsService: ProductsService) {}
 
     @Get()
-    getProducts() {
-        return this.productsService.getProducts()
+    getProducts(
+        @Query('sort', SortingQueryPipe) sortOptions: SortingOptions,
+        @Query() filterOptions: FilterQueryDto,
+    ) {
+        return this.productsService.getProducts(filterOptions, sortOptions)
     }
 
     @Get(':id')
@@ -52,12 +58,18 @@ export class ProductsController {
     @Roles(Role.Admin)
     @UseGuards(RolesGuard)
     @UseGuards(AuthGuard)
+    @UseInterceptors(FileInterceptor('image', multerOptions))
     @Put(':id')
     updateProductById(
         @Param('id', ParseIntPipe) id: number,
+        @UploadedFile() image: Express.Multer.File,
         @Body() updateProductDto: UpdateProductDto,
     ) {
-        return this.productsService.updateProductById(id, updateProductDto)
+        return this.productsService.updateProductById(
+            id,
+            updateProductDto,
+            image,
+        )
     }
 
     @Roles(Role.Admin)
